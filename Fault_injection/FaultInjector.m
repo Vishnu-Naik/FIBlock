@@ -39,11 +39,14 @@ classdef FaultInjector < handle
                 %disp(obj.counter);
             end
         end
-        function fexpflag_1(obj)
-            obj.fexp_flag = 1; 
-        end
-        function fexpflag_0(obj)
-            obj.fexp_flag = 0; 
+%         function fexpflag_1(obj)
+%             obj.fexp_flag = 1; 
+%         end
+%         function fexpflag_0(obj)
+%             obj.fexp_flag = 0; 
+%         end
+        function enable_fault_injector(obj, flag)
+            obj.fexp_flag = flag;
         end
         function setfail_trigger(obj, ft)
             obj.fail_trigger = ft;
@@ -64,95 +67,95 @@ classdef FaultInjector < handle
         function error_data = finject(obj, time_data, simul_time)
             %error_data = es_inject_error(obj, time_data, simul_time);
             
-    error_data = time_data;
-    %disp(simul_time);
-    if (obj.fexp_flag == 1)
-        switch obj.event_type
-            case 'Failure probability'
-                %disp('FPR');
-                %disp(obj.event_type);
-                %disp(obj.effect_type);
-                switch obj.effect_type
-                    case 'Once'
-                        error_data = ...
-                            es_inject_error_gen_fpr_once(obj, time_data);
-                    case 'Constant time'
-                        error_data = ...
-                            es_inject_error_gen_fpr_constime(obj, time_data, simul_time);
-                    case 'Infinite time'
-                        error_data = ...
-                            es_inject_error_gen_fpr_inftime(obj, time_data);
-                    case 'Mean Time To Repair'
-                        %disp('MTR');
-                        error_data = ...
-                            es_inject_error_gen_fpr_mttr(obj, time_data, simul_time);
+            error_data = time_data;
+            %disp(simul_time);
+            if (obj.fexp_flag == 1)
+                switch obj.event_type
+                    case 'Failure probability'
+                        %disp('FPR');
+                        %disp(obj.event_type);
+                        %disp(obj.effect_type);
+                        switch obj.effect_type
+                            case 'Once'
+                                error_data = ...
+                                    es_inject_error_gen_fpr_once(obj, time_data);
+                            case 'Constant time'
+                                error_data = ...
+                                    es_inject_error_gen_fpr_constime(obj, time_data, simul_time);
+                            case 'Infinite time'
+                                error_data = ...
+                                    es_inject_error_gen_fpr_inftime(obj, time_data);
+                            case 'Mean Time To Repair'
+                                %disp('MTR');
+                                error_data = ...
+                                    es_inject_error_gen_fpr_mttr(obj, time_data, simul_time);
+                        end
+                    case 'Mean Time To Failure'
+                        %disp('MTTF')
+                        switch obj.effect_type
+                            case 'Once'
+                                error_data = ...
+                                    es_inject_error_gen_mttf_once(obj, time_data, simul_time);
+                            case 'Constant time'
+                                error_data = ...
+                                    es_inject_error_gen_mttf_constime(obj, time_data, simul_time);
+                            case 'Infinite time'
+                                error_data = ...
+                                    es_inject_error_gen_mttf_inftime(obj, time_data, simul_time);
+                            case 'Mean Time To Repair'
+                                error_data = ...
+                                    es_inject_error_gen_mttf_mttr(obj, time_data, simul_time);
+                        end
+                     case 'Deterministic'
+                        %disp('Deterministic')
+                        switch obj.effect_type
+                            case 'Once'
+                                error_data = ...
+                                    es_inject_error_gen_dfi_once(obj, time_data, simul_time);
+                            case 'Constant time'
+                                error_data = ...
+                                    es_inject_error_gen_dfi_constime(obj, time_data, simul_time);
+                            case 'Infinite time'
+                                error_data = ...
+                                    es_inject_error_gen_dfi_inftime(obj, time_data, simul_time);
+                            case 'Mean Time To Repair'
+                                error_data = ...
+                                    es_inject_error_gen_dfi_mttr(obj, time_data, simul_time);
+                        end
+                      case 'Manual'
+                        %disp('manual')
+                        switch obj.effect_type
+                            case 'Once'
+                                error_data = ...
+                                    es_inject_error_gen_manual(obj, time_data, simul_time);
+                            case 'Constant time'
+                                error_data = ...
+                                    es_inject_error_gen_manual(obj, time_data, simul_time);
+                            case 'Infinite time'
+                                error_data = ...
+                                    es_inject_error_gen_manual(obj, time_data, simul_time);
+                            case 'Mean Time To Repair'
+                                error_data = ...
+                                    es_inject_error_gen_manual(obj, time_data, simul_time);
+                        end
+                    case 'Failure rate distribution'
+                        %disp('FRD')
+                        switch obj.effect_type
+                            case 'Once'
+                                error_data = ...
+                                    es_inject_error_gen_dist_once(obj, time_data, simul_time);
+                            case 'Constant time'
+                                error_data = ...
+                                    es_inject_error_gen_dist_constime(obj, time_data, simul_time);
+                            case 'Infinite time'
+                                error_data = ...
+                                    es_inject_error_gen_dist_inftime(obj, time_data, simul_time);
+                            case 'Mean Time To Repair'
+                                error_data = ...
+                                    es_inject_error_gen_dist_mttr(obj, time_data, simul_time);
+                        end
                 end
-            case 'Mean Time To Failure'
-                %disp('MTTF')
-                switch obj.effect_type
-                    case 'Once'
-                        error_data = ...
-                            es_inject_error_gen_mttf_once(obj, time_data, simul_time);
-                    case 'Constant time'
-                        error_data = ...
-                            es_inject_error_gen_mttf_constime(obj, time_data, simul_time);
-                    case 'Infinite time'
-                        error_data = ...
-                            es_inject_error_gen_mttf_inftime(obj, time_data, simul_time);
-                    case 'Mean Time To Repair'
-                        error_data = ...
-                            es_inject_error_gen_mttf_mttr(obj, time_data, simul_time);
-                end
-             case 'Deterministic'
-                %disp('Deterministic')
-                switch obj.effect_type
-                    case 'Once'
-                        error_data = ...
-                            es_inject_error_gen_dfi_once(obj, time_data, simul_time);
-                    case 'Constant time'
-                        error_data = ...
-                            es_inject_error_gen_dfi_constime(obj, time_data, simul_time);
-                    case 'Infinite time'
-                        error_data = ...
-                            es_inject_error_gen_dfi_inftime(obj, time_data, simul_time);
-                    case 'Mean Time To Repair'
-                        error_data = ...
-                            es_inject_error_gen_dfi_mttr(obj, time_data, simul_time);
-                end
-              case 'Manual'
-                %disp('manual')
-                switch obj.effect_type
-                    case 'Once'
-                        error_data = ...
-                            es_inject_error_gen_manual(obj, time_data, simul_time);
-                    case 'Constant time'
-                        error_data = ...
-                            es_inject_error_gen_manual(obj, time_data, simul_time);
-                    case 'Infinite time'
-                        error_data = ...
-                            es_inject_error_gen_manual(obj, time_data, simul_time);
-                    case 'Mean Time To Repair'
-                        error_data = ...
-                            es_inject_error_gen_manual(obj, time_data, simul_time);
-                end
-            case 'Failure rate distribution'
-                %disp('FRD')
-                switch obj.effect_type
-                    case 'Once'
-                        error_data = ...
-                            es_inject_error_gen_dist_once(obj, time_data, simul_time);
-                    case 'Constant time'
-                        error_data = ...
-                            es_inject_error_gen_dist_constime(obj, time_data, simul_time);
-                    case 'Infinite time'
-                        error_data = ...
-                            es_inject_error_gen_dist_inftime(obj, time_data, simul_time);
-                    case 'Mean Time To Repair'
-                        error_data = ...
-                            es_inject_error_gen_dist_mttr(obj, time_data, simul_time);
-                end
-        end
-     end   
-    end
+             end   
+            end
         end
 end
