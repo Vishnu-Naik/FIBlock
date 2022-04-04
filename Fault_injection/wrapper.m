@@ -9,10 +9,10 @@ error_data = data;
 error_flag = 0;
 global finjectors;
 ff = 2;
-disp('Finit s')
-disp(name)
-disp(keys(finjectors))
-disp('Finit e')
+% disp('Finit s')
+% disp(name)
+% disp(keys(finjectors))
+% disp('Finit e')
 try 
     ff = finjectors(name);
 catch
