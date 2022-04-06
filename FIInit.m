@@ -19,9 +19,7 @@ BaseFIBeffectval = get_values_from_base_ws(FIBeffectval);
 
 global finjectors;
 finjectors = containers.Map;
-disp('start')
-disp(finjectors)
-disp('end')
+
 finjectors(FIBname.Value) = FaultInjector(FaultType, BaseFIBvalue, FIBevent.Value, BaseFIBeventval, FIBeffect.Value, BaseFIBeffectval);
 try
   baseFI = evalin('base','finjectors');
