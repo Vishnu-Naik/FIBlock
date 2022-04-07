@@ -3,7 +3,15 @@ classdef FaultInjector < handle
         fault_type, fault_value, event_type, event_value, effect_type, effect_value
     end
     properties (SetAccess = private)
-        fail_flag = 0, fail_time = 0, stuck_value = 0, past_output = 0, counter = 1, delay_counter = 0, fexp_flag = 1, fail_trigger = 0
+        fail_flag = 0;
+        fail_time = 0;
+        stuck_value = 0;
+        past_output = 0;
+        counter = 1;
+        delay_counter = 0;
+        fexp_flag = 1;
+        fail_trigger = 0;
+        is_error_injected = 0;
     end
     
     methods
@@ -52,6 +60,9 @@ classdef FaultInjector < handle
             obj.fail_trigger = ft;
             %disp(ft);
         end
+        function set_error_injected_flag(obj, flag)
+            obj.is_error_injected = flag;
+        end
         function reset_fi(obj)
             obj.fail_flag = 0;
             obj.fail_time = 0; 
@@ -78,7 +89,7 @@ classdef FaultInjector < handle
                         switch obj.effect_type
                             case 'Once'
                                 error_data = ...
-                                    es_inject_error_gen_fpr_once(obj, time_data);
+                                    es_inject_error_gen_fpr_once(obj, time_data, simul_time);
                             case 'Constant time'
                                 error_data = ...
                                     es_inject_error_gen_fpr_constime(obj, time_data, simul_time);
