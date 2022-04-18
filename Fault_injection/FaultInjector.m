@@ -11,7 +11,6 @@ classdef FaultInjector < handle
         delay_counter = 0;
         fexp_flag = 1;
         fail_trigger = 0;
-        is_error_injected = 0;
     end
     
     methods
@@ -60,8 +59,8 @@ classdef FaultInjector < handle
             obj.fail_trigger = ft;
             %disp(ft);
         end
-        function set_error_injected_flag(obj, flag)
-            obj.is_error_injected = flag;
+        function set_effect_value(obj, val)
+            obj.effect_value = val;
         end
         function reset_fi(obj)
             obj.fail_flag = 0;
