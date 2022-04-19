@@ -11,6 +11,7 @@ classdef FaultInjector < handle
         delay_counter = 0;
         fexp_flag = 1;
         fail_trigger = 0;
+        mean_failure_time = 0;
     end
     
     methods
@@ -61,6 +62,9 @@ classdef FaultInjector < handle
         end
         function set_effect_value(obj, val)
             obj.effect_value = val;
+        end
+        function set_mean_failure_time(obj, val)
+            obj.mean_failure_time = val;
         end
         function reset_fi(obj)
             obj.fail_flag = 0;
