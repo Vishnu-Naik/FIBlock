@@ -1,8 +1,8 @@
 function error_data = es_inject_error_gen_dist_once(obj, error_data, simul_time)
-    if (strcmp(obj.fault_type, 'Network: Time delay'))
-        obj.setpast_output(error_data);
-        obj.incrcounter;
-    end
+%     if (strcmp(obj.fault_type, 'Network: Time delay'))
+%         obj.setpast_output(error_data);
+%         obj.incrcounter;
+%     end
     if (obj.fail_flag == 1 && strcmp(obj.fault_type, 'Sensor: Stuck-at fault'))
         error_data = es_inject_error_gen(obj, error_data);
         obj.setfail_flag(3); %TODO check if delete ff1

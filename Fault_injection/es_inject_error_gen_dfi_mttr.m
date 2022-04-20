@@ -1,8 +1,4 @@
 function error_data = es_inject_error_gen_dfi_mttr(obj, error_data, simul_time)
-    if (strcmp(obj.fault_type, 'Network: Time delay'))
-        obj.setpast_output(error_data);
-        obj.incrcounter;
-    end
     
     if (obj.fail_flag == 0 && (simul_time == obj.event_value|| obj.fail_trigger == 1))
         obj.setfail_flag(1);

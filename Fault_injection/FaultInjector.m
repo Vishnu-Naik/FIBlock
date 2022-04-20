@@ -84,6 +84,7 @@ classdef FaultInjector < handle
             error_data = time_data;
             %disp(simul_time);
             if (obj.fexp_flag == 1)
+                time_delay_initiator(obj, error_data);
                 switch obj.event_type
                     case 'Failure probability'
                         %disp('FPR');
@@ -172,4 +173,11 @@ classdef FaultInjector < handle
              end   
             end
         end
+end
+
+function time_delay_initiator(fault_injector_obj, current_data_value)
+    if (strcmp(fault_injector_obj.fault_type, 'Network: Time delay'))
+        fault_injector_obj.setpast_output(current_data_value);
+        fault_injector_obj.incrcounter;
+    end
 end

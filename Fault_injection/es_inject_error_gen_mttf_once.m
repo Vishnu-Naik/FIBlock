@@ -1,8 +1,4 @@
 function error_data = es_inject_error_gen_mttf_once(obj, error_data, simul_time)
-    if (strcmp(obj.fault_type, 'Network: Time delay'))
-        obj.setpast_output(error_data);
-        obj.incrcounter;
-    end
 
     if (obj.effect_value == 0 && simul_time ~= 0)
         obj.set_effect_value(2*simul_time)
