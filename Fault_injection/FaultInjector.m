@@ -125,18 +125,28 @@ classdef FaultInjector < handle
                         %disp('Deterministic')
                         switch obj.effect_type
                             case 'Once'
-                                error_data = ...
-                                    es_inject_error_gen_dfi_once(obj, time_data, simul_time);
+%                                 error_data = ...
+%                                     es_inject_error_gen_dfi_once(obj, time_data, simul_time);
+                                if (obj.effect_value == 0 && simul_time ~= 0)
+                                    obj.set_effect_value(2*simul_time)
+                                    fault_effect_duration = obj.effect_value;
+                                else
+                                    fault_effect_duration = obj.effect_value;
+                                end
                             case 'Constant time'
-                                error_data = ...
-                                    es_inject_error_gen_dfi_constime(obj, time_data, simul_time);
+%                                 error_data = ...
+%                                     es_inject_error_gen_dfi_constime(obj, time_data, simul_time);
+                                    fault_effect_duration = obj.effect_value;
                             case 'Infinite time'
-                                error_data = ...
-                                    es_inject_error_gen_dfi_inftime(obj, time_data, simul_time);
+%                                 error_data = ...
+%                                     es_inject_error_gen_dfi_inftime(obj, time_data, simul_time);
+                                    fault_effect_duration = obj.effect_value;
                             case 'Mean Time To Repair'
-                                error_data = ...
-                                    es_inject_error_gen_dfi_mttr(obj, time_data, simul_time);
+%                                 error_data = ...
+%                                     es_inject_error_gen_dfi_mttr(obj, time_data, simul_time);
+                                    fault_effect_duration = random(makedist('Normal','mu',obj.effect_value));
                         end
+                        error_data = es_inject_error_gen_dfi(obj, error_data, simul_time, fault_effect_duration);
                       case 'Manual'
                         %disp('manual')
                         switch obj.effect_type
