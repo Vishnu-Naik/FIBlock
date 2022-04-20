@@ -10,10 +10,5 @@ function error_data = es_inject_error_gen_fpr_inftime(obj, error_data)
         end
     end
     
-    if (obj.fail_flag == 1)
-        if (strcmp(obj.fault_type, 'Network: Time delay'))
-            obj.incrdelay_counter;
-        end
-        error_data = es_inject_error_gen(obj, error_data);
-    end
+    error_data = es_error_data(obj, error_data);
 end

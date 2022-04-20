@@ -7,10 +7,5 @@ function error_data = es_inject_error_gen_dfi_inftime(obj, error_data, simul_tim
         end
     end
     
-    if (obj.fail_flag == 1)
-        if (strcmp(obj.fault_type, 'Network: Time delay'))
-            obj.incrdelay_counter;
-        end
-        error_data = es_inject_error_gen(obj, error_data);
-    end
+    error_data = es_error_data(obj, error_data, simul_time);
 end
