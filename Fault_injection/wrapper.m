@@ -1,4 +1,4 @@
-function [error_data, error_flag, fault_type] = wrapper(data, time, name, flag)
+function [error_data, error_flag, fault_type, error_injection_points] = wrapper(data, time, name, flag)
 
 error_data = data;
 error_flag = 0;
@@ -20,8 +20,14 @@ if ff ~= 2
         elseif flag <= 0
             ff.setfail_trigger(0);
         end
+%         if (flag > 0)
+            ff.set_error_injection_points(flag);
+%         else
+%             ff.set_error_injection_points(0);
+%         end
         error_data = ff.finject(data, time);
         error_flag = ff.fail_flag;
+        error_injection_points = ff.error_injection_points;
         ft = ff.fault_type;	
         if error_flag == 0	
             fault_type = 0;	

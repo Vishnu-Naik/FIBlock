@@ -12,6 +12,7 @@ classdef FaultInjector < handle
         fexp_flag = 1;
         fail_trigger = 0;
         mean_failure_time = 0;
+        error_injection_points = 0;
     end
     
     methods
@@ -66,6 +67,9 @@ classdef FaultInjector < handle
         function set_mean_failure_time(obj, val)
             obj.mean_failure_time = val;
         end
+        function set_error_injection_points(obj, val)
+            obj.error_injection_points = val;
+        end
         function reset_fi(obj)
             obj.fail_flag = 0;
             obj.fail_time = 0; 
@@ -80,7 +84,6 @@ classdef FaultInjector < handle
         end
         function error_data = finject(obj, time_data, simul_time)
             %error_data = es_inject_error(obj, time_data, simul_time);
-            
             error_data = time_data;
             %disp(simul_time);
             if (obj.fexp_flag == 1)
