@@ -95,19 +95,30 @@ classdef FaultInjector < handle
                         %disp(obj.effect_type);
                         switch obj.effect_type
                             case 'Once'
-                                error_data = ...
-                                    es_inject_error_gen_fpr_once(obj, time_data, simul_time);
+%                                 error_data = ...
+%                                     es_inject_error_gen_fpr_once(obj, time_data, simul_time);
+                                   if (obj.effect_value == 0 && simul_time ~= 0)
+                                        obj.set_effect_value(2*simul_time)
+                                        fault_effect_duration = obj.effect_value;
+                                   else
+                                        fault_effect_duration = obj.effect_value;
+                                   end
+                                    
                             case 'Constant time'
-                                error_data = ...
-                                    es_inject_error_gen_fpr_constime(obj, time_data, simul_time);
+%                                 error_data = ...
+%                                     es_inject_error_gen_fpr_constime(obj, time_data, simul_time);
+                                  fault_effect_duration = obj.effect_value;
                             case 'Infinite time'
-                                error_data = ...
-                                    es_inject_error_gen_fpr_inftime(obj, time_data);
+%                                 error_data = ...
+%                                     es_inject_error_gen_fpr_inftime(obj, time_data, simul_time);
+                                    fault_effect_duration = obj.effect_value;
                             case 'Mean Time To Repair'
                                 %disp('MTR');
-                                error_data = ...
-                                    es_inject_error_gen_fpr_mttr(obj, time_data, simul_time);
+%                                 error_data = ...
+%                                     es_inject_error_gen_fpr_mttr(obj, time_data, simul_time);
+                                fault_effect_duration = random(makedist('Normal','mu',obj.effect_value));
                         end
+                        error_data = es_inject_error_gen_fpr(obj, error_data, simul_time, fault_effect_duration);
                     case 'Mean Time To Failure'
                         %disp('MTTF')
                         switch obj.effect_type
