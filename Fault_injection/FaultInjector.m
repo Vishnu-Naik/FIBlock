@@ -13,6 +13,7 @@ classdef FaultInjector < handle
         fail_trigger = 0;
         mean_failure_time = 0;
         error_injection_points = 0;
+        simulation_time_period = 0;
     end
     
     methods
@@ -70,6 +71,9 @@ classdef FaultInjector < handle
         function set_error_injection_points(obj, val)
             obj.error_injection_points = val;
         end
+        function set_simulation_time_period(obj, val)
+            obj.simulation_time_period = val;
+        end
         function reset_fi(obj)
             obj.fail_flag = 0;
             obj.fail_time = 0; 
@@ -85,6 +89,9 @@ classdef FaultInjector < handle
         function error_data = finject(obj, time_data, simul_time)
             %error_data = es_inject_error(obj, time_data, simul_time);
             error_data = time_data;
+            if (obj.simulation_time_period == 0 && simul_time ~= 0)
+                obj.set_simulation_time_period(simul_time);
+            end
             %disp(simul_time);
             if (obj.fexp_flag == 1)
                 time_delay_initiator(obj, error_data);
@@ -97,12 +104,8 @@ classdef FaultInjector < handle
                             case 'Once'
 %                                 error_data = ...
 %                                     es_inject_error_gen_fpr_once(obj, time_data, simul_time);
-                                   if (obj.effect_value == 0 && simul_time ~= 0)
-                                        obj.set_effect_value(2*simul_time)
-                                        fault_effect_duration = obj.effect_value;
-                                   else
-                                        fault_effect_duration = obj.effect_value;
-                                   end
+                                    obj.set_effect_value(2*obj.simulation_time_period);
+                                    fault_effect_duration = obj.effect_value;
                                     
                             case 'Constant time'
 %                                 error_data = ...
@@ -125,12 +128,8 @@ classdef FaultInjector < handle
                             case 'Once'
 %                                 error_data = ...
 %                                     es_inject_error_gen_mttf_once(obj, time_data, simul_time);
-                                    if (obj.effect_value == 0 && simul_time ~= 0)
-                                        obj.set_effect_value(2*simul_time)
-                                        fault_effect_duration = obj.effect_value;
-                                   else
-                                        fault_effect_duration = obj.effect_value;
-                                   end
+                                    obj.set_effect_value(2*obj.simulation_time_period);
+                                    fault_effect_duration = obj.effect_value;
                             case 'Constant time'
 %                                 error_data = ...
 %                                     es_inject_error_gen_mttf_constime(obj, time_data, simul_time);
@@ -151,12 +150,8 @@ classdef FaultInjector < handle
                             case 'Once'
 %                                 error_data = ...
 %                                     es_inject_error_gen_dfi_once(obj, time_data, simul_time);
-                                if (obj.effect_value == 0 && simul_time ~= 0)
-                                    obj.set_effect_value(2*simul_time)
+                                    obj.set_effect_value(2*obj.simulation_time_period);
                                     fault_effect_duration = obj.effect_value;
-                                else
-                                    fault_effect_duration = obj.effect_value;
-                                end
                             case 'Constant time'
 %                                 error_data = ...
 %                                     es_inject_error_gen_dfi_constime(obj, time_data, simul_time);
