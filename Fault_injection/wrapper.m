@@ -28,18 +28,19 @@ if ff ~= 2
         error_data = ff.finject(data, time);
         error_flag = ff.fail_flag;
         error_injection_points = ff.error_injection_points;
-        ft = ff.fault_type;	
+        
+%         ft = ff.fault_type;	
         if error_flag == 0	
             fault_type = 0;	
-        elseif (strcmp(ft, 'Sensor: Noise'))	
+        elseif (ff.fault_type == FaultTypeEnum.noise)	
             fault_type = 1;	
-        elseif (strcmp(ft, 'Sensor: Offset'))	
+        elseif (ff.fault_type == FaultTypeEnum.bias)	
             fault_type = 2;	
-        elseif (strcmp(ft, 'Hardware: Bit flips'))	
+        elseif (ff.fault_type == FaultTypeEnum.bitflip)	
             fault_type = 3;	
-        elseif (strcmp(ft, 'Sensor: Stuck-at fault'))	
+        elseif (ff.fault_type == FaultTypeEnum.stuck)	
             fault_type = 4;	
-        elseif (strcmp(ft, 'Network: Time delay'))	
+        elseif (ff.fault_type == FaultTypeEnum.timedelay)	
             fault_type = 5;	
         else	
             fault_type = 6;	
