@@ -47,6 +47,9 @@ if ff ~= 2
         end	
         fault_type = convertStringsToChars(fault_type);
         %disp('injecting');
+    elseif (ff.fexp_flag == 0)
+        fault_type = 0;
+        error_injection_points = ff.error_injection_points;
     end
 end
 
