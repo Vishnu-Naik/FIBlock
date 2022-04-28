@@ -1,6 +1,7 @@
 function error_data = es_inject_error_gen_dfi(fi_obj, current_data_val, current_time, fault_effect_duration)
 
-    isEffectTypeInfinite = contains(fi_obj.effect_type,'infinite','IgnoreCase',true);
+%     isEffectTypeInfinite = contains(fi_obj.effect_type,'infinite','IgnoreCase',true);
+    isEffectTypeInfinite = (fi_obj == FaultEffectEnum(FaultEffectEnum.infinite_time));
     
     isInsideInterval = discretize(current_time, [fi_obj.event_value,fi_obj.event_value+fi_obj.simulation_time_period])==1;
     
@@ -13,7 +14,8 @@ function error_data = es_inject_error_gen_dfi(fi_obj, current_data_val, current_
             fi_obj.set_error_injection_points(1)
         end
 
-        if (strcmp(fi_obj.fault_type, 'Sensor: Stuck-at fault'))
+%         if (strcmp(fi_obj.fault_type, 'Sensor: Stuck-at fault'))
+        if (fi_obj.fault_type == FaultTypeEnum(FaultTypeEnum.stuck))
             fi_obj.setstuck_value(current_data_val);
         end
     elseif ((current_time >= fi_obj.fail_time) && (~isEffectTypeInfinite))

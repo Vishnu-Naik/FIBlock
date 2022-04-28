@@ -3,7 +3,7 @@ p = Simulink.Mask.get(gcb);
 FIBname = p.getParameter('FIBlockName');
 FIBtype = p.getParameter('FaultType');
 FInjEnable = p.getParameter('FInjEnable');
-FaultType = format_fault_type_name(FIBtype.Value);
+% FaultType = format_fault_type_name(FIBtype.Value);
 
 FIBvalue = p.getParameter('FaultValue');
 
@@ -20,7 +20,7 @@ BaseFIBeffectval = get_values_from_base_ws(FIBeffectval);
 global finjectors;
 finjectors = containers.Map;
 
-finjectors(FIBname.Value) = FaultInjector(FaultType, BaseFIBvalue, FIBevent.Value, BaseFIBeventval, FIBeffect.Value, BaseFIBeffectval);
+finjectors(FIBname.Value) = FaultInjector(FaultType, BaseFIBvalue, FaultEvent, BaseFIBeventval, FaultEffect, BaseFIBeffectval);
 try
   baseFI = evalin('base','finjectors');
 catch
@@ -43,10 +43,11 @@ else
 %     faultinjector.fexpflag_0;
     faultinjector.enable_fault_injector(0)
 end
-disp('Init')
-disp(FIBname.Value)
-disp(keys(finjectors))
-disp('init ends')
+% disp('Init')
+% disp(FIBname.Value)
+% disp(keys(finjectors))
+% disp('init ends')
+% disp(FIBtype)
 function FaultType = format_fault_type_name(fault_type_value)
     switch fault_type_value
         case "Stuck-at"

@@ -1,6 +1,7 @@
 function error_data = es_inject_error_gen_mttf(fi_obj, current_data_val, current_time, fault_effect_duration)
 
-    isEffectTypeInfinite = contains(fi_obj.effect_type,'infinite','IgnoreCase',true);
+%     isEffectTypeInfinite = contains(fi_obj.effect_type,'infinite','IgnoreCase',true);
+    isEffectTypeInfinite = (fi_obj == FaultEffectEnum(FaultEffectEnum.infinite_time));
     
     if (fi_obj.mean_failure_time == 0)
         fi_obj.set_mean_failure_time(random(makedist('Normal', 'mu', fi_obj.event_value)));
@@ -16,7 +17,8 @@ function error_data = es_inject_error_gen_mttf(fi_obj, current_data_val, current
             fi_obj.set_error_injection_points(1)
         end
         
-        if (strcmp(fi_obj.fault_type, 'Sensor: Stuck-at fault'))
+%         if (strcmp(fi_obj.fault_type, 'Sensor: Stuck-at fault'))
+        if (fi_obj.fault_type == FaultTypeEnum(FaultTypeEnum.stuck))
             fi_obj.setstuck_value(current_data_val);
         end
     elseif (current_time >= fi_obj.fail_time && ~isEffectTypeInfinite)
