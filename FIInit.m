@@ -43,11 +43,7 @@ else
 %     faultinjector.fexpflag_0;
     faultinjector.enable_fault_injector(0)
 end
-% disp('Init')
-% disp(FIBname.Value)
-% disp(keys(finjectors))
-% disp('init ends')
-% disp(FIBtype)
+
 function FaultType = format_fault_type_name(fault_type_value)
     switch fault_type_value
         case "Stuck-at"

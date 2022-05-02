@@ -45,22 +45,13 @@ classdef FaultInjector < handle
         end
         function dicrdelay_counter(obj)
             obj.delay_counter = obj.delay_counter - 1;
-            if (obj.delay_counter == 0)
-                %disp(obj.counter);
-            end
         end
-%         function fexpflag_1(obj)
-%             obj.fexp_flag = 1; 
-%         end
-%         function fexpflag_0(obj)
-%             obj.fexp_flag = 0; 
-%         end
+
         function enable_fault_injector(obj, flag)
             obj.fexp_flag = flag;
         end
         function setfail_trigger(obj, ft)
             obj.fail_trigger = ft;
-            %disp(ft);
         end
         function set_effect_value(obj, val)
             obj.effect_value = val;
@@ -83,8 +74,6 @@ classdef FaultInjector < handle
             obj.delay_counter = 0;
             obj.fexp_flag = 1;
             obj.fail_trigger = 0;
-            %disp('reseted');
-            %disp(obj.fault_type);
         end
         function error_data = finject(obj, time_data, simul_time)
             %error_data = es_inject_error(obj, time_data, simul_time);
@@ -92,82 +81,30 @@ classdef FaultInjector < handle
             if (obj.simulation_time_period == 0 && simul_time ~= 0)
                 obj.set_simulation_time_period(simul_time);
             end
-            %disp(simul_time);
+            
             if (obj.fexp_flag == 1)
                 time_delay_initiator(obj, error_data);
+                switch obj.effect_type
+                    case FaultEffectEnum.once
+                            obj.set_effect_value(2*obj.simulation_time_period);
+                            fault_effect_duration = obj.effect_value;  
+                    case FaultEffectEnum.constant_time
+                          fault_effect_duration = obj.effect_value;
+                    case FaultEffectEnum.infinite_time
+                            fault_effect_duration = obj.effect_value;
+                    case FaultEffectEnum.mttr
+                        fault_effect_duration = random(makedist('Normal','mu',obj.effect_value));
+                end
+
                 switch obj.event_type
-                    case FaultEventEnum.fpr
-                        %disp('FPR');
-                        %disp(obj.event_type);
-                        %disp(obj.effect_type);
-                        switch obj.effect_type
-                            case FaultEffectEnum.once
-%                                 error_data = ...
-%                                     es_inject_error_gen_fpr_once(obj, time_data, simul_time);
-                                    obj.set_effect_value(2*obj.simulation_time_period);
-                                    fault_effect_duration = obj.effect_value;
-                                    
-                            case FaultEffectEnum.constant_time
-%                                 error_data = ...
-%                                     es_inject_error_gen_fpr_constime(obj, time_data, simul_time);
-                                  fault_effect_duration = obj.effect_value;
-                            case FaultEffectEnum.infinite_time
-%                                 error_data = ...
-%                                     es_inject_error_gen_fpr_inftime(obj, time_data, simul_time);
-                                    fault_effect_duration = obj.effect_value;
-                            case FaultEffectEnum.mttr
-                                %disp('MTR');
-%                                 error_data = ...
-%                                     es_inject_error_gen_fpr_mttr(obj, time_data, simul_time);
-                                fault_effect_duration = random(makedist('Normal','mu',obj.effect_value));
-                        end
+                    case FaultEventEnum.fpr 
                         error_data = es_inject_error_gen_fpr(obj, error_data, simul_time, fault_effect_duration);
                     case FaultEventEnum.mttf
-                        %disp('MTTF')
-                        switch obj.effect_type
-                            case FaultEffectEnum.once
-%                                 error_data = ...
-%                                     es_inject_error_gen_mttf_once(obj, time_data, simul_time);
-                                    obj.set_effect_value(2*obj.simulation_time_period);
-                                    fault_effect_duration = obj.effect_value;
-                            case FaultEffectEnum.constant_time
-%                                 error_data = ...
-%                                     es_inject_error_gen_mttf_constime(obj, time_data, simul_time);
-                                    fault_effect_duration = obj.effect_value;
-                            case FaultEffectEnum.infinite_time
-%                                 error_data = ...
-%                                     es_inject_error_gen_mttf_inftime(obj, time_data, simul_time);
-                                    fault_effect_duration = obj.effect_value;
-                            case FaultEffectEnum.mttr
-%                                 error_data = ...
-%                                     es_inject_error_gen_mttf_mttr(obj, time_data, simul_time);
-                                  fault_effect_duration = random(makedist('Normal','mu',obj.effect_value));
-                        end
                         error_data = es_inject_error_gen_mttf(obj, error_data, simul_time, fault_effect_duration);
-                     case FaultEventEnum.dfi
-                        %disp('Deterministic')
-                        switch obj.effect_type
-                            case FaultEffectEnum.once
-%                                 error_data = ...
-%                                     es_inject_error_gen_dfi_once(obj, time_data, simul_time);
-                                    obj.set_effect_value(2*obj.simulation_time_period);
-                                    fault_effect_duration = obj.effect_value;
-                            case FaultEffectEnum.constant_time
-%                                 error_data = ...
-%                                     es_inject_error_gen_dfi_constime(obj, time_data, simul_time);
-                                    fault_effect_duration = obj.effect_value;
-                            case FaultEffectEnum.infinite_time
-%                                 error_data = ...
-%                                     es_inject_error_gen_dfi_inftime(obj, time_data, simul_time);
-                                    fault_effect_duration = obj.effect_value;
-                            case FaultEffectEnum.mttr
-%                                 error_data = ...
-%                                     es_inject_error_gen_dfi_mttr(obj, time_data, simul_time);
-                                    fault_effect_duration = random(makedist('Normal','mu',obj.effect_value));
-                        end
+                    case FaultEventEnum.dfi
                         error_data = es_inject_error_gen_dfi(obj, error_data, simul_time, fault_effect_duration);
-                      case 'Manual'
-                        %disp('manual')
+                    case 'Manual'
+                    %disp('manual')
                         switch obj.effect_type
                             case 'Once'
                                 error_data = ...
@@ -200,8 +137,8 @@ classdef FaultInjector < handle
                         end
                 end
              end   
-            end
         end
+    end
 end
 
 function time_delay_initiator(fault_injector_obj, current_data_value)

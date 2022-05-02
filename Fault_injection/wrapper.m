@@ -16,20 +16,14 @@ if ff ~= 2
     if (ff.fexp_flag == 1)
         if (flag > 0 && ff.fail_trigger ~= 1)
             ff.setfail_trigger(1);
-            %disp(time);
         elseif flag <= 0
             ff.setfail_trigger(0);
         end
-%         if (flag > 0)
-            ff.set_error_injection_points(flag);
-%         else
-%             ff.set_error_injection_points(0);
-%         end
+        ff.set_error_injection_points(flag);
         error_data = ff.finject(data, time);
         error_flag = ff.fail_flag;
         error_injection_points = ff.error_injection_points;
-        
-%         ft = ff.fault_type;	
+        	
         if error_flag == 0	
             fault_type = 0;	
         elseif (ff.fault_type == FaultTypeEnum.noise)	
@@ -46,15 +40,10 @@ if ff ~= 2
             fault_type = 6;	
         end	
         fault_type = convertStringsToChars(fault_type);
-        %disp('injecting');
     elseif (ff.fexp_flag == 0)
         fault_type = 0;
         error_injection_points = ff.error_injection_points;
     end
 end
 
-%global faultdatas;
-%faultdatas = containers.Map;
-%faultdatas(n) = error_data;
-%disp('____________________');
 end
