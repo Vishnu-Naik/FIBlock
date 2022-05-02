@@ -3,7 +3,6 @@ p = Simulink.Mask.get(gcb);
 FIBname = p.getParameter('FIBlockName');
 FIBtype = p.getParameter('FaultType');
 FInjEnable = p.getParameter('FInjEnable');
-% FaultType = format_fault_type_name(FIBtype.Value);
 
 FIBvalue = p.getParameter('FaultValue');
 
@@ -37,28 +36,9 @@ faultinjector = finjectors(FIBname.Value);
 faultinjector.reset_fi;
 
 if FInjEnable.Value == "on"
-%     faultinjector.fexpflag_1;
     faultinjector.enable_fault_injector(1)
 else
-%     faultinjector.fexpflag_0;
     faultinjector.enable_fault_injector(0)
-end
-
-function FaultType = format_fault_type_name(fault_type_value)
-    switch fault_type_value
-        case "Stuck-at"
-            FaultType = "Sensor: Stuck-at fault";
-        case "Package drop"
-            FaultType = "Network: Package drop";
-        case "Noise"
-            FaultType = "Sensor: Noise";
-        case "Bit flips"
-            FaultType = "Hardware: Bit flips";
-        case "Time delay"
-            FaultType = "Network: Time delay";
-        otherwise
-            FaultType = "Sensor: Offset";
-    end
 end
 
 function value = get_values_from_base_ws(parameter)

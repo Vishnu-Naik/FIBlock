@@ -76,7 +76,6 @@ classdef FaultInjector < handle
             obj.fail_trigger = 0;
         end
         function error_data = finject(obj, time_data, simul_time)
-            %error_data = es_inject_error(obj, time_data, simul_time);
             error_data = time_data;
             if (obj.simulation_time_period == 0 && simul_time ~= 0)
                 obj.set_simulation_time_period(simul_time);
@@ -104,7 +103,6 @@ classdef FaultInjector < handle
                     case FaultEventEnum.dfi
                         error_data = es_inject_error_gen_dfi(obj, error_data, simul_time, fault_effect_duration);
                     case 'Manual'
-                    %disp('manual')
                         switch obj.effect_type
                             case 'Once'
                                 error_data = ...
@@ -120,7 +118,6 @@ classdef FaultInjector < handle
                                     es_inject_error_gen_manual(obj, time_data, simul_time);
                         end
                     case 'Failure rate distribution'
-                        %disp('FRD')
                         switch obj.effect_type
                             case 'Once'
                                 error_data = ...
