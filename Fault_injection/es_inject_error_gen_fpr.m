@@ -1,7 +1,6 @@
 function error_data = es_inject_error_gen_fpr(fi_obj, current_data_val, current_time, fault_effect_duration)
 
-%     isEffectTypeInfinite = contains(fi_obj.effect_type,'infinite','IgnoreCase',true);
-      isEffectTypeInfinite = (fi_obj == FaultEffectEnum(FaultEffectEnum.infinite_time));
+      isEffectTypeInfinite = (fi_obj.effect_type == FaultEffectEnum.infinite_time);
     
      if (fi_obj.fail_flag == 0)
         randomNum = rand;
@@ -16,8 +15,7 @@ function error_data = es_inject_error_gen_fpr(fi_obj, current_data_val, current_
                 fi_obj.set_error_injection_points(1)
             end
             
-%             if (strcmp(fi_obj.fault_type, 'Sensor: Stuck-at fault'))
-            if (fi_obj.fault_type == FaultTypeEnum(FaultTypeEnum.stuck))
+            if (fi_obj.fault_type == FaultTypeEnum.stuck)
                 fi_obj.setstuck_value(current_data_val);
             end
         end

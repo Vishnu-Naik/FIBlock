@@ -4,7 +4,7 @@ function error_data = es_error_data(obj, current_data_value, simul_time)
       simul_time = 0;
     end
     
-    isFaultTypeTimeDelay = (obj.fault_type == FaultTypeEnum(FaultTypeEnum.timedelay));
+    isFaultTypeTimeDelay = (obj.fault_type == FaultTypeEnum.timedelay);
     
     if (obj.fail_flag == 1)
 %         if (strcmp(obj.fault_type, 'Network: Time delay'))
