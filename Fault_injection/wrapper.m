@@ -1,39 +1,49 @@
-function [error_data, error_flag] = wrapper(data, time, name, flag)
-d = data;
-t = time;
-n = name;
-f = flag;
-%global f_flag;
-%f = f_flag;
-error_data = d;
+function [error_data, error_flag, fault_type, error_injection_points] = wrapper(data, time, name, flag)
+
+error_data = data;
 error_flag = 0;
 global finjectors;
 ff = 2;
 try 
-    ff = finjectors(n);
+    ff = finjectors(name);
 catch
-    ne = n;
+    ne = name;
     warning('NOT EXIST');
-    warning(n);
-    %disp(n);
+    warning(name);
 end
-%disp(ff);
+
 if ff ~= 2
     if (ff.fexp_flag == 1)
-        if (f > 0 && ff.fail_trigger ~= 1)
+        if (flag > 0 && ff.fail_trigger ~= 1)
             ff.setfail_trigger(1);
-            %disp(time);
-        elseif f <= 0
+        elseif flag <= 0
             ff.setfail_trigger(0);
         end
-        error_data = ff.finject(d, t);
+        ff.set_error_injection_points(flag);
+        error_data = ff.finject(data, time);
         error_flag = ff.fail_flag;
-        %disp('injecting');
+        error_injection_points = ff.error_injection_points;
+        	
+        if error_flag == 0	
+            fault_type = 0;	
+        elseif (ff.fault_type == FaultTypeEnum.noise)	
+            fault_type = 1;	
+        elseif (ff.fault_type == FaultTypeEnum.bias)	
+            fault_type = 2;	
+        elseif (ff.fault_type == FaultTypeEnum.bitflip)	
+            fault_type = 3;	
+        elseif (ff.fault_type == FaultTypeEnum.stuck)	
+            fault_type = 4;	
+        elseif (ff.fault_type == FaultTypeEnum.timedelay)	
+            fault_type = 5;	
+        else	
+            fault_type = 6;	
+        end	
+        fault_type = convertStringsToChars(fault_type);
+    elseif (ff.fexp_flag == 0)
+        fault_type = 0;
+        error_injection_points = ff.error_injection_points;
     end
 end
 
-%global faultdatas;
-%faultdatas = containers.Map;
-%faultdatas(n) = error_data;
-%disp('____________________');
 end

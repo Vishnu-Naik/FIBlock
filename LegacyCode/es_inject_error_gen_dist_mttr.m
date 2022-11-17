@@ -1,14 +1,14 @@
-function error_data = es_inject_error_gen_dist_inftime(obj, error_data, simul_time)
-    if (strcmp(obj.fault_type, 'Network: Time delay'))
-        obj.setpast_output(error_data);
-        obj.incrcounter;
-    end
+function error_data = es_inject_error_gen_dist_mttr(obj, error_data, simul_time)
+%     if (strcmp(obj.fault_type, 'Network: Time delay'))
+%         obj.setpast_output(error_data);
+%         obj.incrcounter;
+%     end
     if (obj.fail_flag == 0)
         randomNum = rand;
         if (isobject(obj.event_value))
-            if (randomNum > 1 - pdf(obj.event_value, simul_time) || obj.fail_trigger == 1)
+            if (randomNuwm > 1 - pdf(obj.event_value, simul_time) || obj.fail_trigger == 1)
                 obj.setfail_flag(1);
-                obj.setfail_time(simul_time);
+                obj.setfail_time(random(makedist('Normal', 'mu', obj.effect_value)) + simul_time);
                 if (strcmp(obj.fault_type, 'Sensor: Stuck-at fault'))
                     obj.setstuck_value(error_data);
                 end
@@ -19,9 +19,9 @@ function error_data = es_inject_error_gen_dist_inftime(obj, error_data, simul_ti
                 error_data = es_inject_error_gen(obj, error_data);
             end
         else
-            if (randomNum > 1 - es_manual_dist_interpolation(simul_time, obj.event_value) || obj.fail_trigger == 1)
+            if (randomNum > 1 - es_manual_dist_interpolation(simul_time, obj.event_value ) || obj.fail_trigger == 1)
                 obj.setfail_flag(1);
-                obj.setfail_time(simul_time);
+                obj.setfail_time(random(makedist('Normal', 'mu', obj.effect_value)) + simul_time);
                 if (strcmp(obj.fault_type, 'Sensor: Stuck-at fault'))
                     obj.setstuck_value(error_data);
                 end
@@ -30,11 +30,21 @@ function error_data = es_inject_error_gen_dist_inftime(obj, error_data, simul_ti
                 end
             elseif (obj.delay_counter ~= 0 && strcmp(obj.fault_type, 'Network: Time delay'))
                 error_data = es_inject_error_gen(obj, error_data);
+            end   
+        end
+    end
+    if (obj.fail_flag == 1)
+        if(simul_time > obj.fail_time)
+            obj.setfail_flag(0);
+            if (strcmp(obj.fault_type, 'Network: Time delay'))
+                error_data = es_inject_error_gen(obj, error_data);
+                obj.dicrdelay_counter;
             end
         end
-    elseif (obj.fail_flag == 1)
+    end
+    if (obj.fail_flag == 1)
         error_data = es_inject_error_gen(obj, error_data);
-        if (strcmp(obj.fault_type, 'Network: Time delay'))
+        if (simul_time ~= 0 && strcmp(obj.fault_type, 'Network: Time delay'))
             obj.incrdelay_counter;
         end
     end

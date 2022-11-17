@@ -3,7 +3,17 @@ classdef FaultInjector < handle
         fault_type, fault_value, event_type, event_value, effect_type, effect_value
     end
     properties (SetAccess = private)
-        fail_flag = 0, fail_time = 0, stuck_value = 0, past_output = 0, counter = 1, delay_counter = 0, fexp_flag = 1, fail_trigger = 0
+        fail_flag = 0;
+        fail_time = 0;
+        stuck_value = 0;
+        past_output = 0;
+        counter = 1;
+        delay_counter = 0;
+        fexp_flag = 1;
+        fail_trigger = 0;
+        mean_failure_time = 0;
+        error_injection_points = 0;
+        simulation_time_period = 0;
     end
     
     methods
@@ -35,19 +45,25 @@ classdef FaultInjector < handle
         end
         function dicrdelay_counter(obj)
             obj.delay_counter = obj.delay_counter - 1;
-            if (obj.delay_counter == 0)
-                %disp(obj.counter);
-            end
         end
-        function fexpflag_1(obj)
-            obj.fexp_flag = 1; 
-        end
-        function fexpflag_0(obj)
-            obj.fexp_flag = 0; 
+
+        function enable_fault_injector(obj, flag)
+            obj.fexp_flag = flag;
         end
         function setfail_trigger(obj, ft)
             obj.fail_trigger = ft;
-            %disp(ft);
+        end
+        function set_effect_value(obj, val)
+            obj.effect_value = val;
+        end
+        function set_mean_failure_time(obj, val)
+            obj.mean_failure_time = val;
+        end
+        function set_error_injection_points(obj, val)
+            obj.error_injection_points = val;
+        end
+        function set_simulation_time_period(obj, val)
+            obj.simulation_time_period = val;
         end
         function reset_fi(obj)
             obj.fail_flag = 0;
@@ -58,101 +74,43 @@ classdef FaultInjector < handle
             obj.delay_counter = 0;
             obj.fexp_flag = 1;
             obj.fail_trigger = 0;
-            %disp('reseted');
-            %disp(obj.fault_type);
         end
         function error_data = finject(obj, time_data, simul_time)
-            %error_data = es_inject_error(obj, time_data, simul_time);
+            error_data = time_data;
+            if (obj.simulation_time_period == 0 && simul_time ~= 0)
+                obj.set_simulation_time_period(simul_time);
+            end
             
-    error_data = time_data;
-    %disp(simul_time);
-    if (obj.fexp_flag == 1)
-        switch obj.event_type
-            case 'Failure probability'
-                %disp('FPR');
-                %disp(obj.event_type);
-                %disp(obj.effect_type);
+            if (obj.fexp_flag == 1)
+                time_delay_initiator(obj, error_data);
                 switch obj.effect_type
-                    case 'Once'
-                        error_data = ...
-                            es_inject_error_gen_fpr_once(obj, time_data);
-                    case 'Constant time'
-                        error_data = ...
-                            es_inject_error_gen_fpr_constime(obj, time_data, simul_time);
-                    case 'Infinite time'
-                        error_data = ...
-                            es_inject_error_gen_fpr_inftime(obj, time_data);
-                    case 'Mean Time To Repair'
-                        %disp('MTR');
-                        error_data = ...
-                            es_inject_error_gen_fpr_mttr(obj, time_data, simul_time);
+                    case FaultEffectEnum.once
+                            obj.set_effect_value(2*obj.simulation_time_period);
+                            fault_effect_duration = obj.effect_value;  
+                    case FaultEffectEnum.constant_time
+                          fault_effect_duration = obj.effect_value;
+                    case FaultEffectEnum.infinite_time
+                            fault_effect_duration = obj.effect_value;
+                    case FaultEffectEnum.mttr
+                        fault_effect_duration = random(makedist('Normal','mu',obj.effect_value));
                 end
-            case 'Mean Time To Failure'
-                %disp('MTTF')
-                switch obj.effect_type
-                    case 'Once'
-                        error_data = ...
-                            es_inject_error_gen_mttf_once(obj, time_data, simul_time);
-                    case 'Constant time'
-                        error_data = ...
-                            es_inject_error_gen_mttf_constime(obj, time_data, simul_time);
-                    case 'Infinite time'
-                        error_data = ...
-                            es_inject_error_gen_mttf_inftime(obj, time_data, simul_time);
-                    case 'Mean Time To Repair'
-                        error_data = ...
-                            es_inject_error_gen_mttf_mttr(obj, time_data, simul_time);
+
+                switch obj.event_type
+                    case FaultEventEnum.fpr 
+                        error_data = es_inject_error_gen_fpr(obj, error_data, simul_time, fault_effect_duration);
+                    case FaultEventEnum.mttf
+                        error_data = es_inject_error_gen_mttf(obj, error_data, simul_time, fault_effect_duration);
+                    case FaultEventEnum.dfi
+                        error_data = es_inject_error_gen_dfi(obj, error_data, simul_time, fault_effect_duration);
                 end
-             case 'Deterministic'
-                %disp('Deterministic')
-                switch obj.effect_type
-                    case 'Once'
-                        error_data = ...
-                            es_inject_error_gen_dfi_once(obj, time_data, simul_time);
-                    case 'Constant time'
-                        error_data = ...
-                            es_inject_error_gen_dfi_constime(obj, time_data, simul_time);
-                    case 'Infinite time'
-                        error_data = ...
-                            es_inject_error_gen_dfi_inftime(obj, time_data, simul_time);
-                    case 'Mean Time To Repair'
-                        error_data = ...
-                            es_inject_error_gen_dfi_mttr(obj, time_data, simul_time);
-                end
-              case 'Manual'
-                %disp('manual')
-                switch obj.effect_type
-                    case 'Once'
-                        error_data = ...
-                            es_inject_error_gen_manual(obj, time_data, simul_time);
-                    case 'Constant time'
-                        error_data = ...
-                            es_inject_error_gen_manual(obj, time_data, simul_time);
-                    case 'Infinite time'
-                        error_data = ...
-                            es_inject_error_gen_manual(obj, time_data, simul_time);
-                    case 'Mean Time To Repair'
-                        error_data = ...
-                            es_inject_error_gen_manual(obj, time_data, simul_time);
-                end
-            case 'Failure rate distribution'
-                %disp('FRD')
-                switch obj.effect_type
-                    case 'Once'
-                        error_data = ...
-                            es_inject_error_gen_dist_once(obj, time_data, simul_time);
-                    case 'Constant time'
-                        error_data = ...
-                            es_inject_error_gen_dist_constime(obj, time_data, simul_time);
-                    case 'Infinite time'
-                        error_data = ...
-                            es_inject_error_gen_dist_inftime(obj, time_data, simul_time);
-                    case 'Mean Time To Repair'
-                        error_data = ...
-                            es_inject_error_gen_dist_mttr(obj, time_data, simul_time);
-                end
+             end   
         end
-     end   
     end
-        end
+end
+
+function time_delay_initiator(fault_injector_obj, current_data_value)
+    if (fault_injector_obj.fault_type == FaultTypeEnum.timedelay)
+        fault_injector_obj.setpast_output(current_data_value);
+        fault_injector_obj.incrcounter;
+    end
 end
