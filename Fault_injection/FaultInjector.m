@@ -102,36 +102,6 @@ classdef FaultInjector < handle
                         error_data = es_inject_error_gen_mttf(obj, error_data, simul_time, fault_effect_duration);
                     case FaultEventEnum.dfi
                         error_data = es_inject_error_gen_dfi(obj, error_data, simul_time, fault_effect_duration);
-                    case 'Manual'
-                        switch obj.effect_type
-                            case 'Once'
-                                error_data = ...
-                                    es_inject_error_gen_manual(obj, time_data, simul_time);
-                            case 'Constant time'
-                                error_data = ...
-                                    es_inject_error_gen_manual(obj, time_data, simul_time);
-                            case 'Infinite time'
-                                error_data = ...
-                                    es_inject_error_gen_manual(obj, time_data, simul_time);
-                            case 'Mean Time To Repair'
-                                error_data = ...
-                                    es_inject_error_gen_manual(obj, time_data, simul_time);
-                        end
-                    case 'Failure rate distribution'
-                        switch obj.effect_type
-                            case 'Once'
-                                error_data = ...
-                                    es_inject_error_gen_dist_once(obj, time_data, simul_time);
-                            case 'Constant time'
-                                error_data = ...
-                                    es_inject_error_gen_dist_constime(obj, time_data, simul_time);
-                            case 'Infinite time'
-                                error_data = ...
-                                    es_inject_error_gen_dist_inftime(obj, time_data, simul_time);
-                            case 'Mean Time To Repair'
-                                error_data = ...
-                                    es_inject_error_gen_dist_mttr(obj, time_data, simul_time);
-                        end
                 end
              end   
         end
